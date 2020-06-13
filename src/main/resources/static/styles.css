@@ -1,0 +1,20 @@
+body {
+    background-color: powderblue;
+}
+
+div.container {
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+div.container p {
+    color: slateblue;
+    font-family: courier;
+    font-size: 1000%;
+    margin: 0;
+}

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/greetings")
 public class GreetingController {
 
-    @GetMapping
-    public String getGreeting() {
-        return GreetingDto.DEFAULT_GREETING;
-    }
+	@GetMapping
+	public String getGreeting() {
+		return GreetingDto.DEFAULT_GREETING;
+	}
 
 }
