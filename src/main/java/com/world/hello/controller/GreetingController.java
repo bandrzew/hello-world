@@ -1,8 +1,10 @@
 package com.world.hello.controller;
 
+import com.world.hello.deserializer.GreetingDeserializer;
 import com.world.hello.dto.GreetingDto;
 import com.world.hello.model.Greeting;
 import com.world.hello.repository.GreetingRepository;
+import com.world.hello.serializer.GreetingSerializer;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,25 +28,18 @@ public class GreetingController {
 	}
 
 	@GetMapping
-	public List<String> list() {
-		return greetingRepository.findAll().stream().map(Greeting::getContent).collect(Collectors.toList());
-	}
-
-	@GetMapping
-	public String getGreeting() {
-		return GreetingDto.DEFAULT_GREETING;
+	public List<GreetingDto> list() {
+		return greetingRepository.findAll().stream().map(GreetingSerializer::toDto).collect(Collectors.toList());
 	}
 
 	@GetMapping(path = "/{id}")
-	public String get(@PathVariable("id") Long id) {
-		return greetingRepository.findById(id).map(Greeting::getContent).orElseThrow();
+	public GreetingDto get(@PathVariable("id") Long id) {
+		return greetingRepository.findById(id).map(GreetingSerializer::toDto).orElseThrow();
 	}
 
 	@PutMapping
 	public void create(GreetingDto greetingDto) {
-		Greeting greeting = new Greeting();
-		greeting.setContent(greetingDto.getContent());
-		greetingRepository.save(greeting);
+		greetingRepository.save(GreetingDeserializer.fromDto(greetingDto));
 	}
 
 	@PostMapping(path = "/{id}")
@@ -57,6 +52,10 @@ public class GreetingController {
 	@DeleteMapping(path = "/{id}")
 	public void delete(@PathVariable("id") Long id) {
 		greetingRepository.deleteById(id);
+	}
+
+	public String getGreeting() {
+		return GreetingDto.DEFAULT_GREETING;
 	}
 
 }
