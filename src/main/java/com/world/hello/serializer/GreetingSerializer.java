@@ -7,8 +7,10 @@ public class GreetingSerializer {
 
 	public static GreetingDto toDto(Greeting greeting) {
 		GreetingDto greetingDto = new GreetingDto();
-		greetingDto.setId(greeting.getId());
 		greetingDto.setContent(greeting.getContent());
+
+		int id = greeting.getId();
+		greetingDto.setId(id == 0 ? null : id);
 
 		return greetingDto;
 	}

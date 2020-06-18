@@ -1,25 +1,26 @@
 package com.world.hello.dto;
 
-import org.springframework.lang.NonNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import javax.validation.constraints.NotBlank;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GreetingDto {
 
-	public static final String DEFAULT_GREETING = "Hello World!";
+	private Integer id;
 
-	private Long id;
-
-	@NonNull
+	@NotBlank(message = "Content cannot be blank")
 	private String content;
 
 	public GreetingDto() {
-		content = DEFAULT_GREETING;
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

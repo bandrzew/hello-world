@@ -2,60 +2,56 @@ package com.world.hello.controller;
 
 import com.world.hello.deserializer.GreetingDeserializer;
 import com.world.hello.dto.GreetingDto;
-import com.world.hello.model.Greeting;
-import com.world.hello.repository.GreetingRepository;
 import com.world.hello.serializer.GreetingSerializer;
+import com.world.hello.service.GreetingService;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/greetings")
+@RequestMapping(path = "/api/greetings", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class GreetingController {
 
-	private final GreetingRepository greetingRepository;
+	private final GreetingService greetingService;
 
 	@Autowired
-	public GreetingController(GreetingRepository greetingRepository) {
-		this.greetingRepository = greetingRepository;
+	public GreetingController(GreetingService greetingService) {
+		this.greetingService = greetingService;
 	}
 
 	@GetMapping
 	public List<GreetingDto> list() {
-		return greetingRepository.findAll().stream().map(GreetingSerializer::toDto).collect(Collectors.toList());
+		return greetingService.list().stream().map(GreetingSerializer::toDto).collect(Collectors.toList());
 	}
 
 	@GetMapping(path = "/{id}")
-	public GreetingDto get(@PathVariable("id") Long id) {
-		return greetingRepository.findById(id).map(GreetingSerializer::toDto).orElseThrow();
+	public GreetingDto get(@PathVariable("id") Integer id) {
+		return GreetingSerializer.toDto(greetingService.get(id));
 	}
 
 	@PutMapping
-	public void create(GreetingDto greetingDto) {
-		greetingRepository.save(GreetingDeserializer.fromDto(greetingDto));
+	public void create(@Valid @RequestBody GreetingDto greetingDto) {
+		greetingService.create(GreetingDeserializer.fromDto(greetingDto));
 	}
 
 	@PostMapping(path = "/{id}")
-	public void edit(@PathVariable("id") Long id, GreetingDto greetingDto) {
-		Greeting greeting = greetingRepository.findById(id).orElseThrow();
-		greeting.setContent(greetingDto.getContent());
-		greetingRepository.save(greeting);
+	public void edit(@PathVariable("id") Integer id, @Valid @RequestBody GreetingDto greetingDto) {
+		greetingService.edit(id, GreetingDeserializer.fromDto(greetingDto));
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public void delete(@PathVariable("id") Long id) {
-		greetingRepository.deleteById(id);
-	}
-
-	public String getGreeting() {
-		return GreetingDto.DEFAULT_GREETING;
+	public void delete(@PathVariable("id") Integer id) {
+		greetingService.delete(id);
 	}
 
 }
