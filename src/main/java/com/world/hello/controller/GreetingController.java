@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,23 +37,31 @@ public class GreetingController {
 	}
 
 	@GetMapping(path = "/{id}")
-	public GreetingDto get(@PathVariable("id") Integer id) {
-		return GreetingSerializer.toDto(greetingService.get(id));
+	public ResponseEntity<GreetingDto> get(@PathVariable("id") Integer id) {
+		return greetingService.get(id)
+				.map(GreetingSerializer::toDto)
+				.map(greetingDto -> new ResponseEntity<>(greetingDto, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@PutMapping
-	public void create(@Valid @RequestBody GreetingDto greetingDto) {
-		greetingService.create(GreetingDeserializer.fromDto(greetingDto));
+	public ResponseEntity<GreetingDto> create(@Valid @RequestBody GreetingDto greetingDto) {
+		GreetingDto created = GreetingSerializer.toDto(greetingService.create(GreetingDeserializer.fromDto(greetingDto)));
+		return new ResponseEntity<>(created, HttpStatus.CREATED);
 	}
 
 	@PostMapping(path = "/{id}")
-	public void edit(@PathVariable("id") Integer id, @Valid @RequestBody GreetingDto greetingDto) {
-		greetingService.edit(id, GreetingDeserializer.fromDto(greetingDto));
+	public ResponseEntity<GreetingDto> edit(@PathVariable("id") Integer id, @Valid @RequestBody GreetingDto edited) {
+		return greetingService.edit(id, GreetingDeserializer.fromDto(edited))
+				.map(GreetingSerializer::toDto)
+				.map(greetingDto -> new ResponseEntity<>(greetingDto, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public void delete(@PathVariable("id") Integer id) {
+	public ResponseEntity<GreetingDto> delete(@PathVariable("id") Integer id) {
 		greetingService.delete(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }

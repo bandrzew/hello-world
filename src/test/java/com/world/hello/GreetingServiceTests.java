@@ -3,13 +3,13 @@ package com.world.hello;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.world.hello.model.Greeting;
 import com.world.hello.service.GreetingRepository;
 import com.world.hello.service.GreetingService;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -53,7 +53,7 @@ class GreetingServiceTests {
 	@Test
 	public void gettingNotExistingGreetingShouldThrowException() {
 		int id = greetingRepository.save(createGreeting()).getId();
-		assertThrows(NoSuchElementException.class, () -> greetingService.get(id + 1));
+		assertNull(greetingService.get(id + 1).orElse(null));
 	}
 
 	@Test

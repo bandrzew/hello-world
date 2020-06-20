@@ -2,6 +2,7 @@ package com.world.hello.service;
 
 import com.world.hello.model.Greeting;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +20,19 @@ public class GreetingService {
 		return greetingRepository.findAll();
 	}
 
-	public Greeting get(Integer id) {
-		return greetingRepository.findById(id).orElseThrow();
+	public Optional<Greeting> get(Integer id) {
+		return greetingRepository.findById(id);
 	}
 
-	public void create(Greeting greeting) {
-		greetingRepository.save(greeting);
+	public Greeting create(Greeting greeting) {
+		return greetingRepository.save(greeting);
 	}
 
-	public void edit(Integer id, Greeting editGreeting) {
-		greetingRepository.findById(id).map(greeting -> {
+	public Optional<Greeting> edit(Integer id, Greeting editGreeting) {
+		return greetingRepository.findById(id).map(greeting -> {
 			greeting.setContent(editGreeting.getContent());
 			return greeting;
-		}).map(greetingRepository::save).orElseThrow();
+		}).map(greetingRepository::save);
 	}
 
 	public void delete(Integer id) {
