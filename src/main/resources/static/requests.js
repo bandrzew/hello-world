@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     $.ajax({
-        url: window.location.href + '/api/greetings/1',
+        url: window.location.href + 'api/greetings/1',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json'
     }).done(function (greeting) {
