@@ -3,7 +3,7 @@ package com.world.hello;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.world.hello.service.GreetingRepository;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

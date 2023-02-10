@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.world.hello.model.Greeting;
 import com.world.hello.service.GreetingRepository;
 import com.world.hello.service.GreetingService;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 @DataJpaTest
@@ -41,7 +41,7 @@ class GreetingServiceTests {
 
 	@Test
 	public void addingInvalidGreetingShouldThrowException() {
-		assertThrows(DataIntegrityViolationException.class, () -> greetingService.create(new Greeting()));
+		assertThrows(ConstraintViolationException.class, () -> greetingService.create(new Greeting()));
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class GreetingServiceTests {
 	@Test
 	public void invalidEditOfGreetingShouldThrowException() {
 		int id = greetingRepository.save(createGreeting()).getId();
-		assertThrows(DataIntegrityViolationException.class, () -> {
+		assertThrows(ConstraintViolationException.class, () -> {
 			greetingService.edit(id, new Greeting());
 			greetingRepository.flush();
 		});
